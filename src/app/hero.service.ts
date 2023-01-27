@@ -31,10 +31,11 @@ export class HeroService {
     };
   }
 
-  getHeroes(): Observable<Hero[]> {
+  getHeroes(id: number): Observable<Hero> {
+    const url = `${this.heroesUrl}/${id}`;
     return this.http
-      .get<Hero[]>(this.heroesUrl)
-      .pipe(catchError(this.handleError<Hero[]>('getHeroes', [])));
+      .get<Hero>(url)
+      .pipe(catchError(this.handleError<Hero>(`Get Hero id = ${id}`)));
   }
 
   getHero(id: number): Observable<Hero> {
