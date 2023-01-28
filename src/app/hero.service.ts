@@ -31,16 +31,19 @@ export class HeroService {
     };
   }
 
-  getHeroes(id: number): Observable<Hero> {
-    const url = `${this.heroesUrl}/${id}`;
-    return this.http
-      .get<Hero>(url)
-      .pipe(catchError(this.handleError<Hero>(`Get Hero id = ${id}`)));
+  getHeroes(): Observable<Hero[]> {
+    return this.http.get<Hero[]>(this.heroesUrl).pipe(
+      tap((_) => this.log('fetched heroes')),
+      catchError(this.handleError<Hero[]>('Get Heroes', []))
+    );
   }
 
   getHero(id: number): Observable<Hero> {
-    const hero = HEROES.find((hero) => hero.id === id)!;
-    this.messageService.add(`Hero Service: fetched id = ${id}`);
-    return of(hero);
+    const url = `${this.heroesUrl}/${id}`;
+
+    return this.http.get<Hero>(url).pipe(
+      tap((_) => this.log(`fetched hero id = ${id}`)),
+      catchError(this.handleError<Hero>(`Get Hero id = ${id}`))
+    );
   }
 }
