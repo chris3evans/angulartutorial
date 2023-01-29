@@ -15,7 +15,7 @@ export class HeroService {
     private http: HttpClient
   ) {}
 
-  private heroesUrl = 'api/heroes';
+  private heroesUrl = 'localhost:4200/heroes';
 
   private log(message: string) {
     this.messageService.add(`Hero Service: ${message}`);
@@ -31,6 +31,12 @@ export class HeroService {
     };
   }
 
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+    }),
+  };
+
   getHeroes(): Observable<Hero[]> {
     return this.http.get<Hero[]>(this.heroesUrl).pipe(
       tap((_) => this.log('fetched heroes')),
@@ -44,6 +50,13 @@ export class HeroService {
     return this.http.get<Hero>(url).pipe(
       tap((_) => this.log(`fetched hero id = ${id}`)),
       catchError(this.handleError<Hero>(`Get Hero id = ${id}`))
+    );
+  }
+
+  updateHero(hero: Hero): Observable<any> {
+    return this.http.put(this.heroesUrl, hero, this.httpOptions).pipe(
+      tap((_) => this.log(`updated hero id = ${hero.id}`)),
+      catchError(this.handleError<any>('Update Hero'))
     );
   }
 }
